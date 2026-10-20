@@ -1,10 +1,10 @@
 # Şablonlar
 
-Gerçek örnekler: `Models/ButtonStyle/ButtonFill.swift`, `Views/Canvas/ButtonElementView.swift`, `Views/Editor/ButtonPropertiesSheet.swift`, `PaperCraftTests/ButtonStyleTests.swift`. Şablon ile kod ayrışırsa kodu esas al.
+Gerçek örnekler: buton (`Models/ButtonStyle/`, `ButtonElementView`, `ButtonPropertiesSheet`, `ButtonStyleTests`) ve metin kutusu (`Models/TextFieldStyle/`, `TextFieldElementView`, `TextFieldPropertiesSheet`, `TextFieldStyleTests`). Şablon ile kod ayrışırsa kodu esas al.
 
 ## 1. Seçenek enum'u — `Models/<Grup>Style/<Ad>.swift`
 
-> Örnek sadece kalıbı göstermek için. Gerçekte TextField'ın JSON'unda zaten `"style": "roundedBorder"` var ve `ElementView` bunu henüz okumuyor (sabit `.roundedBorder`). Yeni alan açmadan önce böyle mevcut bir alanı tiplendirmek daha doğru olabilir — kullanıcıya sor.
+> Aşağıdaki enum projede gerçekten var (`Models/TextFieldStyle/TextFieldBorder.swift`); eski genel `style` alanının yerini aldı. Yeni alan açmadan önce kullanılmayan ya da tiplenmemiş mevcut bir alan var mı bak — varsa onu tiplendirmek daha doğru olabilir, kullanıcıya sor.
 
 ```swift
 //
@@ -58,11 +58,11 @@ nonisolated enum TextFieldBorder: String, Codable, CaseIterable {
 
 ```swift
 Section("Kenarlık") {
-    segmented(binding(\.border, default: .roundedBorder), title: \.title)
+    OptionPicker(selection: viewModel.binding(\.border, default: .roundedBorder), title: \.title)
 }
 ```
 
-`binding` ve `segmented` yardımcıları `ButtonPropertiesSheet`'te. İkinci bir sayfa yazılırken bunlar kopyalanacaksa ortak bir yere (ör. `ElementPropertiesForm` ya da bir `extension`) taşımayı düşün.
+`viewModel.binding` ve `OptionPicker` ortak parçalar (`Views/Editor/`).
 
 ## 6. Testler
 

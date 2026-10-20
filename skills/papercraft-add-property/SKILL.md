@@ -40,10 +40,17 @@ Kod şablonları için `references/templates.md` dosyasını oku.
 - Boyutla ilgili çizimlerde `.aspectRatio(nil, ...)` kullanma — içeriğin kendi oranına küçülür ve eleman çerçevesini doldurmaz (butonda yaşandı). Oran gerekiyorsa sadece o durumda uygula.
 
 ### 5. Özellikler sayfası
-- Elemanın sayfası yoksa `Views/Editor/<Tür>PropertiesSheet.swift` oluştur, `ButtonPropertiesSheet`'i örnek al (`Form`, `Theme.panel` arka plan, "Bitti" = `dismiss()`).
-  - `ContentView`'daki sayfa şu an sadece `.button` için açılıyor (`isEditingButton`). İkinci tür eklenince bunu seçili türe göre doğru sayfayı gösteren tek bir yapıya genelleştir; açılma kuralı aynı kalsın: **tek dokunuş seçer, çift dokunuş sayfayı açar.** Kullanıcı bunu bilinçli seçti — tek dokunuşta sayfa açılıp canvas'ı küçültmesin.
-- Kontrolü `binding(\.alan, default:)` yardımcısıyla bağla — değişiklik anında canvas'a yansır, "Kaydet" yok.
-- Kontrol seçimi: birkaç seçenek → `segmented`; renk → `ColorSwatchRow`; ikon → `SymbolPickerRow`; metin → `TextField`; sayı → `.numbersAndPunctuation` klavyeli `TextField` (`numberPad`'de return yok, değer hiç uygulanmaz).
+- Sayfanın çerçevesi (başlık, "Bitti", `Form`, `Theme.panel`) ortak: `Views/Editor/ElementPropertiesSheet.swift`. Elemanın sayfası yoksa:
+  1. Sadece `Section`'ları içeren `Views/Editor/<Tür>PropertiesSheet.swift` yaz (`TextFieldPropertiesSheet`'i örnek al).
+  2. `ElementPropertiesSheet`'te `hasSheet(for:)`, `content` ve `title`'a yeni türü ekle.
+  - Açılma kuralı değişmesin: **tek dokunuş seçer, çift dokunuş sayfayı açar** (`ContentView.isShowingProperties`). Kullanıcı bunu bilinçli seçti — tek dokunuşta sayfa açılıp canvas'ı küçültmesin.
+- Ortak parçaları kullan, kopyalama:
+  - `viewModel.binding(\.alan, default:)` (`EditorViewModel+Bindings.swift`) — değişiklik anında canvas'a yansır, "Kaydet" yok.
+  - `SizeSection(viewModel:)` — genişlik × yükseklik.
+  - `OptionPicker(selection:title:)` — enum seçenekleri (segmented).
+  - `ColorSwatchRow` — renk; `SymbolPickerRow` — ikon.
+- Metin → `TextField`; sayı → `.numbersAndPunctuation` klavyeli `TextField` (`numberPad`'de return yok, değer hiç uygulanmaz).
+- Seçim çizgisinin şekli `SelectionOverlay.buttonShape`'te türe göre seçilir; elemanın kenarı kıvrımlıysa oraya da ekle.
 - Bir değişiklik başka alanı da etkiliyorsa (daire şekli → çerçeve kare olur) generic binding yerine `EditorViewModel`'de ayrı bir metot yaz (`setSelectedButtonShape` gibi) ve onu test et.
 
 ### 6. Testler (Swift Testing)
